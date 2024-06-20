@@ -34,6 +34,11 @@ def detect_ip_risk(buybox_data, sellerid_history, price_history):
     
     return ip_risk, risk_factors
 
+
+@app.route('/hello', methods=['GET'])
+def hello():
+    return 'Hello World'
+
 @app.route('/detect_ip_risk', methods=['POST'])
 def detect_ip_risk_endpoint():
     asin = request.json.get('asin')
