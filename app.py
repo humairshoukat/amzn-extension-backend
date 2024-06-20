@@ -30,7 +30,24 @@ def detect_ip_risk(buybox_data, sellerid_history, price_history):
         'frequent_sellers': int(frequent_sellers.sum())
     }
 
-    ip_risk = any(value > 0 for value in risk_factors.values())
+    conditions_met = 0
+    if risk_factors['significant_buybox_changes'] > 5:
+        conditions_met += 1
+    if risk_factors['frequent_sellers'] > 3:
+        conditions_met += 1
+    if risk_factors['significant_price_changes'] > 10:
+        conditions_met += 1
+
+    if conditions_met == 3:
+        ip_risk = 'High'
+    elif conditions_met == 2:
+        ip_risk = 'Moderate'
+    elif conditions_met == 1:
+        ip_risk = 'Low'
+    else:
+        ip_risk = 'No'
+
+    # ip_risk = any(value > 0 for value in risk_factors.values())
     
     return ip_risk, risk_factors
 
@@ -72,10 +89,10 @@ def detect_ip_risk_endpoint():
 
     ip_risk, risk_factors = detect_ip_risk(buybox_data, sellerid_history, price_history)
 
-    if not ip_risk:
-        response_risk_factors = ['None']
-    else:
-        response_risk_factors = [key for key, value in risk_factors.items() if value > 0]
+    # if not ip_risk:
+    #     response_risk_factors = ['None']
+    # else:
+    #     response_risk_factors = [key for key, value in risk_factors.items() if value > 0]
 
     return jsonify(ip_risk=ip_risk, risk_factors=risk_factors)
 
